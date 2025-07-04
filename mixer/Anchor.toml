@@ -5,15 +5,16 @@ package_manager = "npm"
 resolution = true
 skip-lint = false
 
-[programs.localnet]
+[programs.devnet]
 mixer = "Aijc1oXBzSRJKWRYrtj6e8osBASNDkkgREziGGWYvK9p"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "cargo test-sbf"
+test-sbf = "cargo test-sbf"
+test = "npm run test"
