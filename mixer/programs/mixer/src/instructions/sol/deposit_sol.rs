@@ -13,7 +13,7 @@ pub struct DepositSol<'info>{
         init_if_needed, 
         payer = signer,
         space = Commitment::INIT_SPACE + ANCHOR_DISCRIMINATOR_SIZE,
-        seeds = [mixer_seed.as_bytes(), WRAPPED_SOL_MINT.as_ref()],
+        seeds = [mixer_seed.as_bytes(), WRAPPED_SOL_MINT.as_bytes()],
         bump,
     )]
     pub commitment: Box<Account<'info, Commitment>>,

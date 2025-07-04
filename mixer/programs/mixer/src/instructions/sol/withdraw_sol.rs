@@ -12,7 +12,7 @@ pub struct WithdrawSol<'info> {
 
     #[account(
         mut,
-        seeds = [mixer_seed.as_bytes(), WRAPPED_SOL_MINT.as_ref()],
+        seeds = [mixer_seed.as_bytes(), WRAPPED_SOL_MINT.as_bytes()],
         bump = commitment.bump,
     )]
     pub commitment: Box<Account<'info, Commitment>>,
