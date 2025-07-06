@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MIXER_ERROR__INVALID_AMOUNT = exports.MIXER_ERROR__INVALID_HASH = exports.MIXER_ERROR__INVALID_WITHDRAW_AMOUNT = exports.MIXER_ERROR__INVALID_SECRET = void 0;
 exports.getMixerErrorMessage = getMixerErrorMessage;
 exports.isMixerError = isMixerError;
-const kit_1 = require("@solana/kit");
+const gill_1 = require("gill");
 const programs_1 = require("../programs");
 /** InvalidSecret: The secret provided doesn't match with the hash present in the commitment pda */
 exports.MIXER_ERROR__INVALID_SECRET = 0x1770; // 6000
@@ -21,7 +21,7 @@ exports.MIXER_ERROR__INVALID_HASH = 0x1772; // 6002
 /** InvalidAmount: The depoist amount can't be zero */
 exports.MIXER_ERROR__INVALID_AMOUNT = 0x1773; // 6003
 let mixerErrorMessages;
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
     mixerErrorMessages = {
         [exports.MIXER_ERROR__INVALID_AMOUNT]: `The depoist amount can't be zero`,
         [exports.MIXER_ERROR__INVALID_HASH]: `Invalid hash`,
@@ -30,11 +30,11 @@ if (process.env.NODE_ENV !== "production") {
     };
 }
 function getMixerErrorMessage(code) {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
         return mixerErrorMessages[code];
     }
-    return "Error message not available in production bundles.";
+    return 'Error message not available in production bundles.';
 }
 function isMixerError(error, transactionMessage, code) {
-    return (0, kit_1.isProgramError)(error, transactionMessage, programs_1.MIXER_PROGRAM_ADDRESS, code);
+    return (0, gill_1.isProgramError)(error, transactionMessage, programs_1.MIXER_PROGRAM_ADDRESS, code);
 }

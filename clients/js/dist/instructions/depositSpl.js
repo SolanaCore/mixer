@@ -24,31 +24,31 @@ exports.getDepositSplInstructionDataCodec = getDepositSplInstructionDataCodec;
 exports.getDepositSplInstructionAsync = getDepositSplInstructionAsync;
 exports.getDepositSplInstruction = getDepositSplInstruction;
 exports.parseDepositSplInstruction = parseDepositSplInstruction;
-const kit_1 = require("@solana/kit");
+const gill_1 = require("gill");
 const programs_1 = require("../programs");
 const shared_1 = require("../shared");
 exports.DEPOSIT_SPL_DISCRIMINATOR = new Uint8Array([
     224, 0, 198, 175, 198, 47, 105, 204,
 ]);
 function getDepositSplDiscriminatorBytes() {
-    return (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(exports.DEPOSIT_SPL_DISCRIMINATOR);
+    return (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(exports.DEPOSIT_SPL_DISCRIMINATOR);
 }
 function getDepositSplInstructionDataEncoder() {
-    return (0, kit_1.transformEncoder)((0, kit_1.getStructEncoder)([
-        ["discriminator", (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8)],
-        ["hash", (0, kit_1.getArrayEncoder)((0, kit_1.getU8Encoder)(), { size: 32 })],
-        ["amount", (0, kit_1.getU64Encoder)()],
+    return (0, gill_1.transformEncoder)((0, gill_1.getStructEncoder)([
+        ['discriminator', (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8)],
+        ['hash', (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 32)],
+        ['amount', (0, gill_1.getU64Encoder)()],
     ]), (value) => (Object.assign(Object.assign({}, value), { discriminator: exports.DEPOSIT_SPL_DISCRIMINATOR })));
 }
 function getDepositSplInstructionDataDecoder() {
-    return (0, kit_1.getStructDecoder)([
-        ["discriminator", (0, kit_1.fixDecoderSize)((0, kit_1.getBytesDecoder)(), 8)],
-        ["hash", (0, kit_1.getArrayDecoder)((0, kit_1.getU8Decoder)(), { size: 32 })],
-        ["amount", (0, kit_1.getU64Decoder)()],
+    return (0, gill_1.getStructDecoder)([
+        ['discriminator', (0, gill_1.fixDecoderSize)((0, gill_1.getBytesDecoder)(), 8)],
+        ['hash', (0, gill_1.fixDecoderSize)((0, gill_1.getBytesDecoder)(), 32)],
+        ['amount', (0, gill_1.getU64Decoder)()],
     ]);
 }
 function getDepositSplInstructionDataCodec() {
-    return (0, kit_1.combineCodec)(getDepositSplInstructionDataEncoder(), getDepositSplInstructionDataDecoder());
+    return (0, gill_1.combineCodec)(getDepositSplInstructionDataEncoder(), getDepositSplInstructionDataDecoder());
 }
 function getDepositSplInstructionAsync(input, config) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -74,11 +74,11 @@ function getDepositSplInstructionAsync(input, config) {
         const args = Object.assign({}, input);
         // Resolve default values.
         if (!accounts.commitment.value) {
-            accounts.commitment.value = yield (0, kit_1.getProgramDerivedAddress)({
+            accounts.commitment.value = yield (0, gill_1.getProgramDerivedAddress)({
                 programAddress,
                 seeds: [
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([109, 105, 120, 101, 114])),
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([109, 105, 120, 101, 114])),
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([
                         83, 111, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
                         49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
                         49, 49, 49, 49, 49, 49, 49, 49, 50,
@@ -87,43 +87,43 @@ function getDepositSplInstructionAsync(input, config) {
             });
         }
         if (!accounts.tokenEscrow.value) {
-            accounts.tokenEscrow.value = yield (0, kit_1.getProgramDerivedAddress)({
+            accounts.tokenEscrow.value = yield (0, gill_1.getProgramDerivedAddress)({
                 programAddress,
                 seeds: [
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([
                         116, 111, 107, 101, 110, 45, 101, 115, 99, 114, 111, 119,
                     ])),
-                    (0, kit_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.commitment.value)),
+                    (0, gill_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.commitment.value)),
                 ],
             });
         }
         if (!accounts.tokenAta.value) {
-            accounts.tokenAta.value = yield (0, kit_1.getProgramDerivedAddress)({
-                programAddress: "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+            accounts.tokenAta.value = yield (0, gill_1.getProgramDerivedAddress)({
+                programAddress: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
                 seeds: [
-                    (0, kit_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.signer.value)),
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([
+                    (0, gill_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.signer.value)),
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([
                         6, 221, 246, 225, 215, 101, 161, 147, 217, 203, 225, 70, 206, 235,
                         121, 172, 28, 180, 133, 237, 95, 91, 55, 145, 58, 140, 245, 133,
                         126, 255, 0, 169,
                     ])),
-                    (0, kit_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.tokenMint.value)),
+                    (0, gill_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.tokenMint.value)),
                 ],
             });
         }
         if (!accounts.systemProgram.value) {
             accounts.systemProgram.value =
-                "11111111111111111111111111111111";
+                '11111111111111111111111111111111';
         }
         if (!accounts.tokenProgram.value) {
             accounts.tokenProgram.value =
-                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+                'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
         }
         if (!accounts.associatedTokenProgram.value) {
             accounts.associatedTokenProgram.value =
-                "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+                'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
         }
-        const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, "programId");
+        const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, 'programId');
         const instruction = {
             accounts: [
                 getAccountMeta(accounts.signer),
@@ -165,17 +165,17 @@ function getDepositSplInstruction(input, config) {
     // Resolve default values.
     if (!accounts.systemProgram.value) {
         accounts.systemProgram.value =
-            "11111111111111111111111111111111";
+            '11111111111111111111111111111111';
     }
     if (!accounts.tokenProgram.value) {
         accounts.tokenProgram.value =
-            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
     }
     if (!accounts.associatedTokenProgram.value) {
         accounts.associatedTokenProgram.value =
-            "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
     }
-    const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, "programId");
+    const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, 'programId');
     const instruction = {
         accounts: [
             getAccountMeta(accounts.signer),
@@ -195,7 +195,7 @@ function getDepositSplInstruction(input, config) {
 function parseDepositSplInstruction(instruction) {
     if (instruction.accounts.length < 8) {
         // TODO: Coded error.
-        throw new Error("Not enough accounts");
+        throw new Error('Not enough accounts');
     }
     let accountIndex = 0;
     const getNextAccount = () => {

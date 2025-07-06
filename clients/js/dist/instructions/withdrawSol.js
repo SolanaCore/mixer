@@ -24,31 +24,31 @@ exports.getWithdrawSolInstructionDataCodec = getWithdrawSolInstructionDataCodec;
 exports.getWithdrawSolInstructionAsync = getWithdrawSolInstructionAsync;
 exports.getWithdrawSolInstruction = getWithdrawSolInstruction;
 exports.parseWithdrawSolInstruction = parseWithdrawSolInstruction;
-const kit_1 = require("@solana/kit");
+const gill_1 = require("gill");
 const programs_1 = require("../programs");
 const shared_1 = require("../shared");
 exports.WITHDRAW_SOL_DISCRIMINATOR = new Uint8Array([
     145, 131, 74, 136, 65, 137, 42, 38,
 ]);
 function getWithdrawSolDiscriminatorBytes() {
-    return (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(exports.WITHDRAW_SOL_DISCRIMINATOR);
+    return (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(exports.WITHDRAW_SOL_DISCRIMINATOR);
 }
 function getWithdrawSolInstructionDataEncoder() {
-    return (0, kit_1.transformEncoder)((0, kit_1.getStructEncoder)([
-        ["discriminator", (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8)],
-        ["hash", (0, kit_1.getArrayEncoder)((0, kit_1.getU8Encoder)(), { size: 32 })],
-        ["amount", (0, kit_1.getU64Encoder)()],
+    return (0, gill_1.transformEncoder)((0, gill_1.getStructEncoder)([
+        ['discriminator', (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8)],
+        ['hash', (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 32)],
+        ['amount', (0, gill_1.getU64Encoder)()],
     ]), (value) => (Object.assign(Object.assign({}, value), { discriminator: exports.WITHDRAW_SOL_DISCRIMINATOR })));
 }
 function getWithdrawSolInstructionDataDecoder() {
-    return (0, kit_1.getStructDecoder)([
-        ["discriminator", (0, kit_1.fixDecoderSize)((0, kit_1.getBytesDecoder)(), 8)],
-        ["hash", (0, kit_1.getArrayDecoder)((0, kit_1.getU8Decoder)(), { size: 32 })],
-        ["amount", (0, kit_1.getU64Decoder)()],
+    return (0, gill_1.getStructDecoder)([
+        ['discriminator', (0, gill_1.fixDecoderSize)((0, gill_1.getBytesDecoder)(), 8)],
+        ['hash', (0, gill_1.fixDecoderSize)((0, gill_1.getBytesDecoder)(), 32)],
+        ['amount', (0, gill_1.getU64Decoder)()],
     ]);
 }
 function getWithdrawSolInstructionDataCodec() {
-    return (0, kit_1.combineCodec)(getWithdrawSolInstructionDataEncoder(), getWithdrawSolInstructionDataDecoder());
+    return (0, gill_1.combineCodec)(getWithdrawSolInstructionDataEncoder(), getWithdrawSolInstructionDataDecoder());
 }
 function getWithdrawSolInstructionAsync(input, config) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -67,11 +67,11 @@ function getWithdrawSolInstructionAsync(input, config) {
         const args = Object.assign({}, input);
         // Resolve default values.
         if (!accounts.commitment.value) {
-            accounts.commitment.value = yield (0, kit_1.getProgramDerivedAddress)({
+            accounts.commitment.value = yield (0, gill_1.getProgramDerivedAddress)({
                 programAddress,
                 seeds: [
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([109, 105, 120, 101, 114])),
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([109, 105, 120, 101, 114])),
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([
                         83, 111, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
                         49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
                         49, 49, 49, 49, 49, 49, 49, 49, 50,
@@ -80,19 +80,19 @@ function getWithdrawSolInstructionAsync(input, config) {
             });
         }
         if (!accounts.solEscrow.value) {
-            accounts.solEscrow.value = yield (0, kit_1.getProgramDerivedAddress)({
+            accounts.solEscrow.value = yield (0, gill_1.getProgramDerivedAddress)({
                 programAddress,
                 seeds: [
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([115, 111, 108, 95, 101, 115, 99, 114, 111, 119])),
-                    (0, kit_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.commitment.value)),
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([115, 111, 108, 95, 101, 115, 99, 114, 111, 119])),
+                    (0, gill_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.commitment.value)),
                 ],
             });
         }
         if (!accounts.systemProgram.value) {
             accounts.systemProgram.value =
-                "11111111111111111111111111111111";
+                '11111111111111111111111111111111';
         }
-        const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, "programId");
+        const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, 'programId');
         const instruction = {
             accounts: [
                 getAccountMeta(accounts.signer),
@@ -123,9 +123,9 @@ function getWithdrawSolInstruction(input, config) {
     // Resolve default values.
     if (!accounts.systemProgram.value) {
         accounts.systemProgram.value =
-            "11111111111111111111111111111111";
+            '11111111111111111111111111111111';
     }
-    const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, "programId");
+    const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, 'programId');
     const instruction = {
         accounts: [
             getAccountMeta(accounts.signer),
@@ -141,7 +141,7 @@ function getWithdrawSolInstruction(input, config) {
 function parseWithdrawSolInstruction(instruction) {
     if (instruction.accounts.length < 4) {
         // TODO: Coded error.
-        throw new Error("Not enough accounts");
+        throw new Error('Not enough accounts');
     }
     let accountIndex = 0;
     const getNextAccount = () => {

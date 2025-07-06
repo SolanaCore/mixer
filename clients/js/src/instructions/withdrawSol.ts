@@ -11,8 +11,6 @@ import {
   fixDecoderSize,
   fixEncoderSize,
   getAddressEncoder,
-  getArrayDecoder,
-  getArrayEncoder,
   getBytesDecoder,
   getBytesEncoder,
   getProgramDerivedAddress,
@@ -20,8 +18,6 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-  getU8Decoder,
-  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -37,13 +33,13 @@ import {
   type TransactionSigner,
   type WritableAccount,
   type WritableSignerAccount,
-} from "@solana/kit";
-import { MIXER_PROGRAM_ADDRESS } from "../programs";
+} from 'gill';
+import { MIXER_PROGRAM_ADDRESS } from '../programs';
 import {
   expectAddress,
   getAccountMetaFactory,
   type ResolvedAccount,
-} from "../shared";
+} from '../shared';
 
 export const WITHDRAW_SOL_DISCRIMINATOR = new Uint8Array([
   145, 131, 74, 136, 65, 137, 42, 38,
@@ -51,7 +47,7 @@ export const WITHDRAW_SOL_DISCRIMINATOR = new Uint8Array([
 
 export function getWithdrawSolDiscriminatorBytes() {
   return fixEncoderSize(getBytesEncoder(), 8).encode(
-    WITHDRAW_SOL_DISCRIMINATOR,
+    WITHDRAW_SOL_DISCRIMINATOR
   );
 }
 
@@ -62,7 +58,7 @@ export type WithdrawSolInstruction<
   TAccountSolEscrow extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = "11111111111111111111111111111111",
+    | IAccountMeta<string> = '11111111111111111111111111111111',
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -87,31 +83,31 @@ export type WithdrawSolInstruction<
 
 export type WithdrawSolInstructionData = {
   discriminator: ReadonlyUint8Array;
-  hash: Array<number>;
+  hash: ReadonlyUint8Array;
   amount: bigint;
 };
 
 export type WithdrawSolInstructionDataArgs = {
-  hash: Array<number>;
+  hash: ReadonlyUint8Array;
   amount: number | bigint;
 };
 
 export function getWithdrawSolInstructionDataEncoder(): Encoder<WithdrawSolInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
-      ["hash", getArrayEncoder(getU8Encoder(), { size: 32 })],
-      ["amount", getU64Encoder()],
+      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['hash', fixEncoderSize(getBytesEncoder(), 32)],
+      ['amount', getU64Encoder()],
     ]),
-    (value) => ({ ...value, discriminator: WITHDRAW_SOL_DISCRIMINATOR }),
+    (value) => ({ ...value, discriminator: WITHDRAW_SOL_DISCRIMINATOR })
   );
 }
 
 export function getWithdrawSolInstructionDataDecoder(): Decoder<WithdrawSolInstructionData> {
   return getStructDecoder([
-    ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
-    ["hash", getArrayDecoder(getU8Decoder(), { size: 32 })],
-    ["amount", getU64Decoder()],
+    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['hash', fixDecoderSize(getBytesDecoder(), 32)],
+    ['amount', getU64Decoder()],
   ]);
 }
 
@@ -121,7 +117,7 @@ export function getWithdrawSolInstructionDataCodec(): Codec<
 > {
   return combineCodec(
     getWithdrawSolInstructionDataEncoder(),
-    getWithdrawSolInstructionDataDecoder(),
+    getWithdrawSolInstructionDataDecoder()
   );
 }
 
@@ -135,8 +131,8 @@ export type WithdrawSolAsyncInput<
   commitment?: Address<TAccountCommitment>;
   solEscrow?: Address<TAccountSolEscrow>;
   systemProgram?: Address<TAccountSystemProgram>;
-  hash: WithdrawSolInstructionDataArgs["hash"];
-  amount: WithdrawSolInstructionDataArgs["amount"];
+  hash: WithdrawSolInstructionDataArgs['hash'];
+  amount: WithdrawSolInstructionDataArgs['amount'];
 };
 
 export async function getWithdrawSolInstructionAsync<
@@ -152,7 +148,7 @@ export async function getWithdrawSolInstructionAsync<
     TAccountSolEscrow,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): Promise<
   WithdrawSolInstruction<
     TProgramAddress,
@@ -191,7 +187,7 @@ export async function getWithdrawSolInstructionAsync<
             83, 111, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
             49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
             49, 49, 49, 49, 49, 49, 49, 49, 50,
-          ]),
+          ])
         ),
       ],
     });
@@ -201,7 +197,7 @@ export async function getWithdrawSolInstructionAsync<
       programAddress,
       seeds: [
         getBytesEncoder().encode(
-          new Uint8Array([115, 111, 108, 95, 101, 115, 99, 114, 111, 119]),
+          new Uint8Array([115, 111, 108, 95, 101, 115, 99, 114, 111, 119])
         ),
         getAddressEncoder().encode(expectAddress(accounts.commitment.value)),
       ],
@@ -209,10 +205,10 @@ export async function getWithdrawSolInstructionAsync<
   }
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
-      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.signer),
@@ -222,7 +218,7 @@ export async function getWithdrawSolInstructionAsync<
     ],
     programAddress,
     data: getWithdrawSolInstructionDataEncoder().encode(
-      args as WithdrawSolInstructionDataArgs,
+      args as WithdrawSolInstructionDataArgs
     ),
   } as WithdrawSolInstruction<
     TProgramAddress,
@@ -245,8 +241,8 @@ export type WithdrawSolInput<
   commitment: Address<TAccountCommitment>;
   solEscrow: Address<TAccountSolEscrow>;
   systemProgram?: Address<TAccountSystemProgram>;
-  hash: WithdrawSolInstructionDataArgs["hash"];
-  amount: WithdrawSolInstructionDataArgs["amount"];
+  hash: WithdrawSolInstructionDataArgs['hash'];
+  amount: WithdrawSolInstructionDataArgs['amount'];
 };
 
 export function getWithdrawSolInstruction<
@@ -262,7 +258,7 @@ export function getWithdrawSolInstruction<
     TAccountSolEscrow,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): WithdrawSolInstruction<
   TProgramAddress,
   TAccountSigner,
@@ -291,10 +287,10 @@ export function getWithdrawSolInstruction<
   // Resolve default values.
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
-      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.signer),
@@ -304,7 +300,7 @@ export function getWithdrawSolInstruction<
     ],
     programAddress,
     data: getWithdrawSolInstructionDataEncoder().encode(
-      args as WithdrawSolInstructionDataArgs,
+      args as WithdrawSolInstructionDataArgs
     ),
   } as WithdrawSolInstruction<
     TProgramAddress,
@@ -337,11 +333,11 @@ export function parseWithdrawSolInstruction<
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &
-    IInstructionWithData<Uint8Array>,
+    IInstructionWithData<Uint8Array>
 ): ParsedWithdrawSolInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 4) {
     // TODO: Coded error.
-    throw new Error("Not enough accounts");
+    throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {

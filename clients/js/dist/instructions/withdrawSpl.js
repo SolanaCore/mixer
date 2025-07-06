@@ -24,31 +24,31 @@ exports.getWithdrawSplInstructionDataCodec = getWithdrawSplInstructionDataCodec;
 exports.getWithdrawSplInstructionAsync = getWithdrawSplInstructionAsync;
 exports.getWithdrawSplInstruction = getWithdrawSplInstruction;
 exports.parseWithdrawSplInstruction = parseWithdrawSplInstruction;
-const kit_1 = require("@solana/kit");
+const gill_1 = require("gill");
 const programs_1 = require("../programs");
 const shared_1 = require("../shared");
 exports.WITHDRAW_SPL_DISCRIMINATOR = new Uint8Array([
     181, 154, 94, 86, 62, 115, 6, 186,
 ]);
 function getWithdrawSplDiscriminatorBytes() {
-    return (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(exports.WITHDRAW_SPL_DISCRIMINATOR);
+    return (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(exports.WITHDRAW_SPL_DISCRIMINATOR);
 }
 function getWithdrawSplInstructionDataEncoder() {
-    return (0, kit_1.transformEncoder)((0, kit_1.getStructEncoder)([
-        ["discriminator", (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8)],
-        ["hash", (0, kit_1.getArrayEncoder)((0, kit_1.getU8Encoder)(), { size: 32 })],
-        ["amount", (0, kit_1.getU64Encoder)()],
+    return (0, gill_1.transformEncoder)((0, gill_1.getStructEncoder)([
+        ['discriminator', (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8)],
+        ['hash', (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 32)],
+        ['amount', (0, gill_1.getU64Encoder)()],
     ]), (value) => (Object.assign(Object.assign({}, value), { discriminator: exports.WITHDRAW_SPL_DISCRIMINATOR })));
 }
 function getWithdrawSplInstructionDataDecoder() {
-    return (0, kit_1.getStructDecoder)([
-        ["discriminator", (0, kit_1.fixDecoderSize)((0, kit_1.getBytesDecoder)(), 8)],
-        ["hash", (0, kit_1.getArrayDecoder)((0, kit_1.getU8Decoder)(), { size: 32 })],
-        ["amount", (0, kit_1.getU64Decoder)()],
+    return (0, gill_1.getStructDecoder)([
+        ['discriminator', (0, gill_1.fixDecoderSize)((0, gill_1.getBytesDecoder)(), 8)],
+        ['hash', (0, gill_1.fixDecoderSize)((0, gill_1.getBytesDecoder)(), 32)],
+        ['amount', (0, gill_1.getU64Decoder)()],
     ]);
 }
 function getWithdrawSplInstructionDataCodec() {
-    return (0, kit_1.combineCodec)(getWithdrawSplInstructionDataEncoder(), getWithdrawSplInstructionDataDecoder());
+    return (0, gill_1.combineCodec)(getWithdrawSplInstructionDataEncoder(), getWithdrawSplInstructionDataDecoder());
 }
 function getWithdrawSplInstructionAsync(input, config) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -74,27 +74,27 @@ function getWithdrawSplInstructionAsync(input, config) {
         const args = Object.assign({}, input);
         // Resolve default values.
         if (!accounts.commitment.value) {
-            accounts.commitment.value = yield (0, kit_1.getProgramDerivedAddress)({
+            accounts.commitment.value = yield (0, gill_1.getProgramDerivedAddress)({
                 programAddress,
                 seeds: [
-                    (0, kit_1.getBytesEncoder)().encode(new Uint8Array([109, 105, 120, 101, 114])),
-                    (0, kit_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.tokenMint.value)),
+                    (0, gill_1.getBytesEncoder)().encode(new Uint8Array([109, 105, 120, 101, 114])),
+                    (0, gill_1.getAddressEncoder)().encode((0, shared_1.expectAddress)(accounts.tokenMint.value)),
                 ],
             });
         }
         if (!accounts.systemProgram.value) {
             accounts.systemProgram.value =
-                "11111111111111111111111111111111";
+                '11111111111111111111111111111111';
         }
         if (!accounts.tokenProgram.value) {
             accounts.tokenProgram.value =
-                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+                'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
         }
         if (!accounts.associateTokenProgram.value) {
             accounts.associateTokenProgram.value =
-                "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+                'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
         }
-        const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, "programId");
+        const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, 'programId');
         const instruction = {
             accounts: [
                 getAccountMeta(accounts.signer),
@@ -136,17 +136,17 @@ function getWithdrawSplInstruction(input, config) {
     // Resolve default values.
     if (!accounts.systemProgram.value) {
         accounts.systemProgram.value =
-            "11111111111111111111111111111111";
+            '11111111111111111111111111111111';
     }
     if (!accounts.tokenProgram.value) {
         accounts.tokenProgram.value =
-            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
     }
     if (!accounts.associateTokenProgram.value) {
         accounts.associateTokenProgram.value =
-            "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
+            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
     }
-    const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, "programId");
+    const getAccountMeta = (0, shared_1.getAccountMetaFactory)(programAddress, 'programId');
     const instruction = {
         accounts: [
             getAccountMeta(accounts.signer),
@@ -166,7 +166,7 @@ function getWithdrawSplInstruction(input, config) {
 function parseWithdrawSplInstruction(instruction) {
     if (instruction.accounts.length < 8) {
         // TODO: Coded error.
-        throw new Error("Not enough accounts");
+        throw new Error('Not enough accounts');
     }
     let accountIndex = 0;
     const getNextAccount = () => {

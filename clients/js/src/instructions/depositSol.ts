@@ -11,8 +11,6 @@ import {
   fixDecoderSize,
   fixEncoderSize,
   getAddressEncoder,
-  getArrayDecoder,
-  getArrayEncoder,
   getBytesDecoder,
   getBytesEncoder,
   getProgramDerivedAddress,
@@ -20,8 +18,6 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-  getU8Decoder,
-  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -37,13 +33,13 @@ import {
   type TransactionSigner,
   type WritableAccount,
   type WritableSignerAccount,
-} from "@solana/kit";
-import { MIXER_PROGRAM_ADDRESS } from "../programs";
+} from 'gill';
+import { MIXER_PROGRAM_ADDRESS } from '../programs';
 import {
   expectAddress,
   getAccountMetaFactory,
   type ResolvedAccount,
-} from "../shared";
+} from '../shared';
 
 export const DEPOSIT_SOL_DISCRIMINATOR = new Uint8Array([
   108, 81, 78, 117, 125, 155, 56, 200,
@@ -60,7 +56,7 @@ export type DepositSolInstruction<
   TAccountSolEscrow extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = "11111111111111111111111111111111",
+    | IAccountMeta<string> = '11111111111111111111111111111111',
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -85,31 +81,31 @@ export type DepositSolInstruction<
 
 export type DepositSolInstructionData = {
   discriminator: ReadonlyUint8Array;
-  hash: Array<number>;
+  hash: ReadonlyUint8Array;
   amount: bigint;
 };
 
 export type DepositSolInstructionDataArgs = {
-  hash: Array<number>;
+  hash: ReadonlyUint8Array;
   amount: number | bigint;
 };
 
 export function getDepositSolInstructionDataEncoder(): Encoder<DepositSolInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
-      ["hash", getArrayEncoder(getU8Encoder(), { size: 32 })],
-      ["amount", getU64Encoder()],
+      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['hash', fixEncoderSize(getBytesEncoder(), 32)],
+      ['amount', getU64Encoder()],
     ]),
-    (value) => ({ ...value, discriminator: DEPOSIT_SOL_DISCRIMINATOR }),
+    (value) => ({ ...value, discriminator: DEPOSIT_SOL_DISCRIMINATOR })
   );
 }
 
 export function getDepositSolInstructionDataDecoder(): Decoder<DepositSolInstructionData> {
   return getStructDecoder([
-    ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
-    ["hash", getArrayDecoder(getU8Decoder(), { size: 32 })],
-    ["amount", getU64Decoder()],
+    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['hash', fixDecoderSize(getBytesDecoder(), 32)],
+    ['amount', getU64Decoder()],
   ]);
 }
 
@@ -119,7 +115,7 @@ export function getDepositSolInstructionDataCodec(): Codec<
 > {
   return combineCodec(
     getDepositSolInstructionDataEncoder(),
-    getDepositSolInstructionDataDecoder(),
+    getDepositSolInstructionDataDecoder()
   );
 }
 
@@ -133,8 +129,8 @@ export type DepositSolAsyncInput<
   commitment?: Address<TAccountCommitment>;
   solEscrow?: Address<TAccountSolEscrow>;
   systemProgram?: Address<TAccountSystemProgram>;
-  hash: DepositSolInstructionDataArgs["hash"];
-  amount: DepositSolInstructionDataArgs["amount"];
+  hash: DepositSolInstructionDataArgs['hash'];
+  amount: DepositSolInstructionDataArgs['amount'];
 };
 
 export async function getDepositSolInstructionAsync<
@@ -150,7 +146,7 @@ export async function getDepositSolInstructionAsync<
     TAccountSolEscrow,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): Promise<
   DepositSolInstruction<
     TProgramAddress,
@@ -189,7 +185,7 @@ export async function getDepositSolInstructionAsync<
             83, 111, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
             49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49,
             49, 49, 49, 49, 49, 49, 49, 49, 50,
-          ]),
+          ])
         ),
       ],
     });
@@ -199,7 +195,7 @@ export async function getDepositSolInstructionAsync<
       programAddress,
       seeds: [
         getBytesEncoder().encode(
-          new Uint8Array([115, 111, 108, 95, 101, 115, 99, 114, 111, 119]),
+          new Uint8Array([115, 111, 108, 95, 101, 115, 99, 114, 111, 119])
         ),
         getAddressEncoder().encode(expectAddress(accounts.commitment.value)),
       ],
@@ -207,10 +203,10 @@ export async function getDepositSolInstructionAsync<
   }
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
-      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.signer),
@@ -220,7 +216,7 @@ export async function getDepositSolInstructionAsync<
     ],
     programAddress,
     data: getDepositSolInstructionDataEncoder().encode(
-      args as DepositSolInstructionDataArgs,
+      args as DepositSolInstructionDataArgs
     ),
   } as DepositSolInstruction<
     TProgramAddress,
@@ -243,8 +239,8 @@ export type DepositSolInput<
   commitment: Address<TAccountCommitment>;
   solEscrow: Address<TAccountSolEscrow>;
   systemProgram?: Address<TAccountSystemProgram>;
-  hash: DepositSolInstructionDataArgs["hash"];
-  amount: DepositSolInstructionDataArgs["amount"];
+  hash: DepositSolInstructionDataArgs['hash'];
+  amount: DepositSolInstructionDataArgs['amount'];
 };
 
 export function getDepositSolInstruction<
@@ -260,7 +256,7 @@ export function getDepositSolInstruction<
     TAccountSolEscrow,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): DepositSolInstruction<
   TProgramAddress,
   TAccountSigner,
@@ -289,10 +285,10 @@ export function getDepositSolInstruction<
   // Resolve default values.
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
-      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.signer),
@@ -302,7 +298,7 @@ export function getDepositSolInstruction<
     ],
     programAddress,
     data: getDepositSolInstructionDataEncoder().encode(
-      args as DepositSolInstructionDataArgs,
+      args as DepositSolInstructionDataArgs
     ),
   } as DepositSolInstruction<
     TProgramAddress,
@@ -335,11 +331,11 @@ export function parseDepositSolInstruction<
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &
-    IInstructionWithData<Uint8Array>,
+    IInstructionWithData<Uint8Array>
 ): ParsedDepositSolInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 4) {
     // TODO: Coded error.
-    throw new Error("Not enough accounts");
+    throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {

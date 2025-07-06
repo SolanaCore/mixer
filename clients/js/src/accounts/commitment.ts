@@ -15,8 +15,6 @@ import {
   fetchEncodedAccounts,
   fixDecoderSize,
   fixEncoderSize,
-  getArrayDecoder,
-  getArrayEncoder,
   getBytesDecoder,
   getBytesEncoder,
   getStructDecoder,
@@ -35,7 +33,7 @@ import {
   type MaybeAccount,
   type MaybeEncodedAccount,
   type ReadonlyUint8Array,
-} from "@solana/kit";
+} from 'gill';
 
 export const COMMITMENT_DISCRIMINATOR = new Uint8Array([
   61, 112, 129, 128, 24, 147, 77, 87,
@@ -47,28 +45,28 @@ export function getCommitmentDiscriminatorBytes() {
 
 export type Commitment = {
   discriminator: ReadonlyUint8Array;
-  hash: Array<number>;
+  hash: ReadonlyUint8Array;
   bump: number;
 };
 
-export type CommitmentArgs = { hash: Array<number>; bump: number };
+export type CommitmentArgs = { hash: ReadonlyUint8Array; bump: number };
 
 export function getCommitmentEncoder(): Encoder<CommitmentArgs> {
   return transformEncoder(
     getStructEncoder([
-      ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
-      ["hash", getArrayEncoder(getU8Encoder(), { size: 32 })],
-      ["bump", getU8Encoder()],
+      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['hash', fixEncoderSize(getBytesEncoder(), 32)],
+      ['bump', getU8Encoder()],
     ]),
-    (value) => ({ ...value, discriminator: COMMITMENT_DISCRIMINATOR }),
+    (value) => ({ ...value, discriminator: COMMITMENT_DISCRIMINATOR })
   );
 }
 
 export function getCommitmentDecoder(): Decoder<Commitment> {
   return getStructDecoder([
-    ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
-    ["hash", getArrayDecoder(getU8Decoder(), { size: 32 })],
-    ["bump", getU8Decoder()],
+    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['hash', fixDecoderSize(getBytesDecoder(), 32)],
+    ['bump', getU8Decoder()],
   ]);
 }
 
@@ -77,24 +75,24 @@ export function getCommitmentCodec(): Codec<CommitmentArgs, Commitment> {
 }
 
 export function decodeCommitment<TAddress extends string = string>(
-  encodedAccount: EncodedAccount<TAddress>,
+  encodedAccount: EncodedAccount<TAddress>
 ): Account<Commitment, TAddress>;
 export function decodeCommitment<TAddress extends string = string>(
-  encodedAccount: MaybeEncodedAccount<TAddress>,
+  encodedAccount: MaybeEncodedAccount<TAddress>
 ): MaybeAccount<Commitment, TAddress>;
 export function decodeCommitment<TAddress extends string = string>(
-  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>,
+  encodedAccount: EncodedAccount<TAddress> | MaybeEncodedAccount<TAddress>
 ): Account<Commitment, TAddress> | MaybeAccount<Commitment, TAddress> {
   return decodeAccount(
     encodedAccount as MaybeEncodedAccount<TAddress>,
-    getCommitmentDecoder(),
+    getCommitmentDecoder()
   );
 }
 
 export async function fetchCommitment<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
-  config?: FetchAccountConfig,
+  config?: FetchAccountConfig
 ): Promise<Account<Commitment, TAddress>> {
   const maybeAccount = await fetchMaybeCommitment(rpc, address, config);
   assertAccountExists(maybeAccount);
@@ -104,7 +102,7 @@ export async function fetchCommitment<TAddress extends string = string>(
 export async function fetchMaybeCommitment<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   address: Address<TAddress>,
-  config?: FetchAccountConfig,
+  config?: FetchAccountConfig
 ): Promise<MaybeAccount<Commitment, TAddress>> {
   const maybeAccount = await fetchEncodedAccount(rpc, address, config);
   return decodeCommitment(maybeAccount);
@@ -113,7 +111,7 @@ export async function fetchMaybeCommitment<TAddress extends string = string>(
 export async function fetchAllCommitment(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
-  config?: FetchAccountsConfig,
+  config?: FetchAccountsConfig
 ): Promise<Account<Commitment>[]> {
   const maybeAccounts = await fetchAllMaybeCommitment(rpc, addresses, config);
   assertAccountsExist(maybeAccounts);
@@ -123,8 +121,12 @@ export async function fetchAllCommitment(
 export async function fetchAllMaybeCommitment(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
   addresses: Array<Address>,
-  config?: FetchAccountsConfig,
+  config?: FetchAccountsConfig
 ): Promise<MaybeAccount<Commitment>[]> {
   const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
   return maybeAccounts.map((maybeAccount) => decodeCommitment(maybeAccount));
+}
+
+export function getCommitmentSize(): number {
+  return 41;
 }

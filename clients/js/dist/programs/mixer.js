@@ -10,18 +10,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MixerInstruction = exports.MixerAccount = exports.MIXER_PROGRAM_ADDRESS = void 0;
 exports.identifyMixerAccount = identifyMixerAccount;
 exports.identifyMixerInstruction = identifyMixerInstruction;
-const kit_1 = require("@solana/kit");
-exports.MIXER_PROGRAM_ADDRESS = "Aijc1oXBzSRJKWRYrtj6e8osBASNDkkgREziGGWYvK9p";
+const gill_1 = require("gill");
+exports.MIXER_PROGRAM_ADDRESS = 'Aijc1oXBzSRJKWRYrtj6e8osBASNDkkgREziGGWYvK9p';
 var MixerAccount;
 (function (MixerAccount) {
     MixerAccount[MixerAccount["Commitment"] = 0] = "Commitment";
 })(MixerAccount || (exports.MixerAccount = MixerAccount = {}));
 function identifyMixerAccount(account) {
-    const data = "data" in account ? account.data : account;
-    if ((0, kit_1.containsBytes)(data, (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(new Uint8Array([61, 112, 129, 128, 24, 147, 77, 87])), 0)) {
+    const data = 'data' in account ? account.data : account;
+    if ((0, gill_1.containsBytes)(data, (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(new Uint8Array([61, 112, 129, 128, 24, 147, 77, 87])), 0)) {
         return MixerAccount.Commitment;
     }
-    throw new Error("The provided account could not be identified as a mixer account.");
+    throw new Error('The provided account could not be identified as a mixer account.');
 }
 var MixerInstruction;
 (function (MixerInstruction) {
@@ -31,18 +31,18 @@ var MixerInstruction;
     MixerInstruction[MixerInstruction["WithdrawSpl"] = 3] = "WithdrawSpl";
 })(MixerInstruction || (exports.MixerInstruction = MixerInstruction = {}));
 function identifyMixerInstruction(instruction) {
-    const data = "data" in instruction ? instruction.data : instruction;
-    if ((0, kit_1.containsBytes)(data, (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(new Uint8Array([108, 81, 78, 117, 125, 155, 56, 200])), 0)) {
+    const data = 'data' in instruction ? instruction.data : instruction;
+    if ((0, gill_1.containsBytes)(data, (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(new Uint8Array([108, 81, 78, 117, 125, 155, 56, 200])), 0)) {
         return MixerInstruction.DepositSol;
     }
-    if ((0, kit_1.containsBytes)(data, (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(new Uint8Array([224, 0, 198, 175, 198, 47, 105, 204])), 0)) {
+    if ((0, gill_1.containsBytes)(data, (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(new Uint8Array([224, 0, 198, 175, 198, 47, 105, 204])), 0)) {
         return MixerInstruction.DepositSpl;
     }
-    if ((0, kit_1.containsBytes)(data, (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(new Uint8Array([145, 131, 74, 136, 65, 137, 42, 38])), 0)) {
+    if ((0, gill_1.containsBytes)(data, (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(new Uint8Array([145, 131, 74, 136, 65, 137, 42, 38])), 0)) {
         return MixerInstruction.WithdrawSol;
     }
-    if ((0, kit_1.containsBytes)(data, (0, kit_1.fixEncoderSize)((0, kit_1.getBytesEncoder)(), 8).encode(new Uint8Array([181, 154, 94, 86, 62, 115, 6, 186])), 0)) {
+    if ((0, gill_1.containsBytes)(data, (0, gill_1.fixEncoderSize)((0, gill_1.getBytesEncoder)(), 8).encode(new Uint8Array([181, 154, 94, 86, 62, 115, 6, 186])), 0)) {
         return MixerInstruction.WithdrawSpl;
     }
-    throw new Error("The provided instruction could not be identified as a mixer instruction.");
+    throw new Error('The provided instruction could not be identified as a mixer instruction.');
 }
