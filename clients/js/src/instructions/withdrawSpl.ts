@@ -11,8 +11,6 @@ import {
   fixDecoderSize,
   fixEncoderSize,
   getAddressEncoder,
-  getArrayDecoder,
-  getArrayEncoder,
   getBytesDecoder,
   getBytesEncoder,
   getProgramDerivedAddress,
@@ -20,8 +18,6 @@ import {
   getStructEncoder,
   getU64Decoder,
   getU64Encoder,
-  getU8Decoder,
-  getU8Encoder,
   transformEncoder,
   type Address,
   type Codec,
@@ -37,13 +33,13 @@ import {
   type TransactionSigner,
   type WritableAccount,
   type WritableSignerAccount,
-} from "@solana/kit";
-import { MIXER_PROGRAM_ADDRESS } from "../programs";
+} from 'gill';
+import { MIXER_PROGRAM_ADDRESS } from '../programs';
 import {
   expectAddress,
   getAccountMetaFactory,
   type ResolvedAccount,
-} from "../shared";
+} from '../shared';
 
 export const WITHDRAW_SPL_DISCRIMINATOR = new Uint8Array([
   181, 154, 94, 86, 62, 115, 6, 186,
@@ -51,7 +47,7 @@ export const WITHDRAW_SPL_DISCRIMINATOR = new Uint8Array([
 
 export function getWithdrawSplDiscriminatorBytes() {
   return fixEncoderSize(getBytesEncoder(), 8).encode(
-    WITHDRAW_SPL_DISCRIMINATOR,
+    WITHDRAW_SPL_DISCRIMINATOR
   );
 }
 
@@ -64,13 +60,13 @@ export type WithdrawSplInstruction<
   TAccountTokenAta extends string | IAccountMeta<string> = string,
   TAccountSystemProgram extends
     | string
-    | IAccountMeta<string> = "11111111111111111111111111111111",
+    | IAccountMeta<string> = '11111111111111111111111111111111',
   TAccountTokenProgram extends
     | string
-    | IAccountMeta<string> = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    | IAccountMeta<string> = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
   TAccountAssociateTokenProgram extends
     | string
-    | IAccountMeta<string> = "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    | IAccountMeta<string> = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
   TRemainingAccounts extends readonly IAccountMeta<string>[] = [],
 > = IInstruction<TProgram> &
   IInstructionWithData<Uint8Array> &
@@ -108,31 +104,31 @@ export type WithdrawSplInstruction<
 
 export type WithdrawSplInstructionData = {
   discriminator: ReadonlyUint8Array;
-  hash: Array<number>;
+  hash: ReadonlyUint8Array;
   amount: bigint;
 };
 
 export type WithdrawSplInstructionDataArgs = {
-  hash: Array<number>;
+  hash: ReadonlyUint8Array;
   amount: number | bigint;
 };
 
 export function getWithdrawSplInstructionDataEncoder(): Encoder<WithdrawSplInstructionDataArgs> {
   return transformEncoder(
     getStructEncoder([
-      ["discriminator", fixEncoderSize(getBytesEncoder(), 8)],
-      ["hash", getArrayEncoder(getU8Encoder(), { size: 32 })],
-      ["amount", getU64Encoder()],
+      ['discriminator', fixEncoderSize(getBytesEncoder(), 8)],
+      ['hash', fixEncoderSize(getBytesEncoder(), 32)],
+      ['amount', getU64Encoder()],
     ]),
-    (value) => ({ ...value, discriminator: WITHDRAW_SPL_DISCRIMINATOR }),
+    (value) => ({ ...value, discriminator: WITHDRAW_SPL_DISCRIMINATOR })
   );
 }
 
 export function getWithdrawSplInstructionDataDecoder(): Decoder<WithdrawSplInstructionData> {
   return getStructDecoder([
-    ["discriminator", fixDecoderSize(getBytesDecoder(), 8)],
-    ["hash", getArrayDecoder(getU8Decoder(), { size: 32 })],
-    ["amount", getU64Decoder()],
+    ['discriminator', fixDecoderSize(getBytesDecoder(), 8)],
+    ['hash', fixDecoderSize(getBytesDecoder(), 32)],
+    ['amount', getU64Decoder()],
   ]);
 }
 
@@ -142,7 +138,7 @@ export function getWithdrawSplInstructionDataCodec(): Codec<
 > {
   return combineCodec(
     getWithdrawSplInstructionDataEncoder(),
-    getWithdrawSplInstructionDataDecoder(),
+    getWithdrawSplInstructionDataDecoder()
   );
 }
 
@@ -164,8 +160,8 @@ export type WithdrawSplAsyncInput<
   systemProgram?: Address<TAccountSystemProgram>;
   tokenProgram?: Address<TAccountTokenProgram>;
   associateTokenProgram?: Address<TAccountAssociateTokenProgram>;
-  hash: WithdrawSplInstructionDataArgs["hash"];
-  amount: WithdrawSplInstructionDataArgs["amount"];
+  hash: WithdrawSplInstructionDataArgs['hash'];
+  amount: WithdrawSplInstructionDataArgs['amount'];
 };
 
 export async function getWithdrawSplInstructionAsync<
@@ -189,7 +185,7 @@ export async function getWithdrawSplInstructionAsync<
     TAccountTokenProgram,
     TAccountAssociateTokenProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): Promise<
   WithdrawSplInstruction<
     TProgramAddress,
@@ -240,18 +236,18 @@ export async function getWithdrawSplInstructionAsync<
   }
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
-      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
-      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" as Address<"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA">;
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   }
   if (!accounts.associateTokenProgram.value) {
     accounts.associateTokenProgram.value =
-      "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" as Address<"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL">;
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.signer),
@@ -265,7 +261,7 @@ export async function getWithdrawSplInstructionAsync<
     ],
     programAddress,
     data: getWithdrawSplInstructionDataEncoder().encode(
-      args as WithdrawSplInstructionDataArgs,
+      args as WithdrawSplInstructionDataArgs
     ),
   } as WithdrawSplInstruction<
     TProgramAddress,
@@ -300,8 +296,8 @@ export type WithdrawSplInput<
   systemProgram?: Address<TAccountSystemProgram>;
   tokenProgram?: Address<TAccountTokenProgram>;
   associateTokenProgram?: Address<TAccountAssociateTokenProgram>;
-  hash: WithdrawSplInstructionDataArgs["hash"];
-  amount: WithdrawSplInstructionDataArgs["amount"];
+  hash: WithdrawSplInstructionDataArgs['hash'];
+  amount: WithdrawSplInstructionDataArgs['amount'];
 };
 
 export function getWithdrawSplInstruction<
@@ -325,7 +321,7 @@ export function getWithdrawSplInstruction<
     TAccountTokenProgram,
     TAccountAssociateTokenProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress }
 ): WithdrawSplInstruction<
   TProgramAddress,
   TAccountSigner,
@@ -365,18 +361,18 @@ export function getWithdrawSplInstruction<
   // Resolve default values.
   if (!accounts.systemProgram.value) {
     accounts.systemProgram.value =
-      "11111111111111111111111111111111" as Address<"11111111111111111111111111111111">;
+      '11111111111111111111111111111111' as Address<'11111111111111111111111111111111'>;
   }
   if (!accounts.tokenProgram.value) {
     accounts.tokenProgram.value =
-      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" as Address<"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA">;
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' as Address<'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'>;
   }
   if (!accounts.associateTokenProgram.value) {
     accounts.associateTokenProgram.value =
-      "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL" as Address<"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL">;
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL' as Address<'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'>;
   }
 
-  const getAccountMeta = getAccountMetaFactory(programAddress, "programId");
+  const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
   const instruction = {
     accounts: [
       getAccountMeta(accounts.signer),
@@ -390,7 +386,7 @@ export function getWithdrawSplInstruction<
     ],
     programAddress,
     data: getWithdrawSplInstructionDataEncoder().encode(
-      args as WithdrawSplInstructionDataArgs,
+      args as WithdrawSplInstructionDataArgs
     ),
   } as WithdrawSplInstruction<
     TProgramAddress,
@@ -431,11 +427,11 @@ export function parseWithdrawSplInstruction<
 >(
   instruction: IInstruction<TProgram> &
     IInstructionWithAccounts<TAccountMetas> &
-    IInstructionWithData<Uint8Array>,
+    IInstructionWithData<Uint8Array>
 ): ParsedWithdrawSplInstruction<TProgram, TAccountMetas> {
   if (instruction.accounts.length < 8) {
     // TODO: Coded error.
-    throw new Error("Not enough accounts");
+    throw new Error('Not enough accounts');
   }
   let accountIndex = 0;
   const getNextAccount = () => {

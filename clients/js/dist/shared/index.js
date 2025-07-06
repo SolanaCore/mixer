@@ -13,14 +13,14 @@ exports.expectProgramDerivedAddress = expectProgramDerivedAddress;
 exports.expectTransactionSigner = expectTransactionSigner;
 exports.getAccountMetaFactory = getAccountMetaFactory;
 exports.isTransactionSigner = isTransactionSigner;
-const kit_1 = require("@solana/kit");
+const gill_1 = require("gill");
 /**
  * Asserts that the given value is not null or undefined.
  * @internal
  */
 function expectSome(value) {
     if (value == null) {
-        throw new Error("Expected a value but received null or undefined.");
+        throw new Error('Expected a value but received null or undefined.');
     }
     return value;
 }
@@ -30,9 +30,9 @@ function expectSome(value) {
  */
 function expectAddress(value) {
     if (!value) {
-        throw new Error("Expected a Address.");
+        throw new Error('Expected a Address.');
     }
-    if (typeof value === "object" && "address" in value) {
+    if (typeof value === 'object' && 'address' in value) {
         return value.address;
     }
     if (Array.isArray(value)) {
@@ -45,8 +45,8 @@ function expectAddress(value) {
  * @internal
  */
 function expectProgramDerivedAddress(value) {
-    if (!value || !Array.isArray(value) || !(0, kit_1.isProgramDerivedAddress)(value)) {
-        throw new Error("Expected a ProgramDerivedAddress.");
+    if (!value || !Array.isArray(value) || !(0, gill_1.isProgramDerivedAddress)(value)) {
+        throw new Error('Expected a ProgramDerivedAddress.');
     }
     return value;
 }
@@ -56,7 +56,7 @@ function expectProgramDerivedAddress(value) {
  */
 function expectTransactionSigner(value) {
     if (!value || !isTransactionSigner(value)) {
-        throw new Error("Expected a TransactionSigner.");
+        throw new Error('Expected a TransactionSigner.');
     }
     return value;
 }
@@ -67,24 +67,24 @@ function expectTransactionSigner(value) {
 function getAccountMetaFactory(programAddress, optionalAccountStrategy) {
     return (account) => {
         if (!account.value) {
-            if (optionalAccountStrategy === "omitted")
+            if (optionalAccountStrategy === 'omitted')
                 return;
             return Object.freeze({
                 address: programAddress,
-                role: kit_1.AccountRole.READONLY,
+                role: gill_1.AccountRole.READONLY,
             });
         }
         const writableRole = account.isWritable
-            ? kit_1.AccountRole.WRITABLE
-            : kit_1.AccountRole.READONLY;
+            ? gill_1.AccountRole.WRITABLE
+            : gill_1.AccountRole.READONLY;
         return Object.freeze(Object.assign({ address: expectAddress(account.value), role: isTransactionSigner(account.value)
-                ? (0, kit_1.upgradeRoleToSigner)(writableRole)
+                ? (0, gill_1.upgradeRoleToSigner)(writableRole)
                 : writableRole }, (isTransactionSigner(account.value) ? { signer: account.value } : {})));
     };
 }
 function isTransactionSigner(value) {
     return (!!value &&
-        typeof value === "object" &&
-        "address" in value &&
-        (0, kit_1.isTransactionSigner)(value));
+        typeof value === 'object' &&
+        'address' in value &&
+        (0, gill_1.isTransactionSigner)(value));
 }

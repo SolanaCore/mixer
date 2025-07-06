@@ -11,8 +11,8 @@ import {
   type Address,
   type SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM,
   type SolanaError,
-} from "@solana/kit";
-import { MIXER_PROGRAM_ADDRESS } from "../programs";
+} from 'gill';
+import { MIXER_PROGRAM_ADDRESS } from '../programs';
 
 /** InvalidSecret: The secret provided doesn't match with the hash present in the commitment pda */
 export const MIXER_ERROR__INVALID_SECRET = 0x1770; // 6000
@@ -30,7 +30,7 @@ export type MixerError =
   | typeof MIXER_ERROR__INVALID_WITHDRAW_AMOUNT;
 
 let mixerErrorMessages: Record<MixerError, string> | undefined;
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   mixerErrorMessages = {
     [MIXER_ERROR__INVALID_AMOUNT]: `The depoist amount can't be zero`,
     [MIXER_ERROR__INVALID_HASH]: `Invalid hash`,
@@ -40,11 +40,11 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export function getMixerErrorMessage(code: MixerError): string {
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== 'production') {
     return (mixerErrorMessages as Record<MixerError, string>)[code];
   }
 
-  return "Error message not available in production bundles.";
+  return 'Error message not available in production bundles.';
 }
 
 export function isMixerError<TProgramErrorCode extends MixerError>(
@@ -52,13 +52,13 @@ export function isMixerError<TProgramErrorCode extends MixerError>(
   transactionMessage: {
     instructions: Record<number, { programAddress: Address }>;
   },
-  code?: TProgramErrorCode,
+  code?: TProgramErrorCode
 ): error is SolanaError<typeof SOLANA_ERROR__INSTRUCTION_ERROR__CUSTOM> &
   Readonly<{ context: Readonly<{ code: TProgramErrorCode }> }> {
   return isProgramError<TProgramErrorCode>(
     error,
     transactionMessage,
     MIXER_PROGRAM_ADDRESS,
-    code,
+    code
   );
 }
